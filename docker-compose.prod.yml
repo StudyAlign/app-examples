@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────
+#  Production overlay.
+#
+#  Joins Caddy's shared external "web" network so the host reverse proxy reaches
+#  the app by container name instead of a published port. Only the public
+#  container (proxy) joins "web"; the two app containers stay on the private
+#  default network.
+#
+#  On the server, set in .env:
+#      COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml
+#
+#  Then Caddy (see deploy/Caddyfile.example) reaches this stack as:
+#      reverse_proxy proxy:80
+# ─────────────────────────────────────────────────────────────────────────
+
+services:
+  proxy:
+    ports: !reset []        # clear the host port the base file published
+    networks:
+      - default             # keep reaching the app containers
+      - web                 # let the host Caddy reach it as http://proxy
+
+networks:
+  web:
+    external: true          # created by whoever runs Caddy: docker network create web

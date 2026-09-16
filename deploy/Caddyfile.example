@@ -1,0 +1,13 @@
+# Add this block to the host's existing /etc/caddy/Caddyfile. Caddy runs as a
+# container on the shared "web" network; this stack's single public container
+# (proxy) joins it too, so Caddy reaches it by name, with no published host port.
+#
+# Replace examples.studyalign.com with your domain. Caddy obtains and renews the
+# TLS certificate automatically. The nginx proxy behind this routes:
+#     /          -> landing page
+#     /react/    -> React demo
+#     /vanilla/  -> Vanilla JS demo
+examples.studyalign.com {
+    encode zstd gzip
+    reverse_proxy proxy:80
+}

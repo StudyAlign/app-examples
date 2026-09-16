@@ -1,0 +1,69 @@
+# ─────────────────────────────────────────────────────────────────────────
+#  StudyAlign example apps: base stack.
+#
+#  One nginx reverse proxy (the single public-facing container) routes to two
+#  demo apps that both embed the StudyAlign logging library:
+#      /          -> landing page (served by the proxy)
+#      /react/    -> react-app     (React + Quill)
+#      /vanilla/  -> vanilla-app   (Vanilla JS + Quill)
+#
+#  This base file is prod-shaped: each app is a static production build served
+#  by its own small nginx. Overlays adjust it:
+#      docker-compose.dev.yml   hot-reloading Vite dev servers + source mounts
+#      docker-compose.prod.yml  drop the host port, join Caddy's "web" network
+#
+#  Pick the overlay with COMPOSE_FILE in .env (see .env.example).
+# ─────────────────────────────────────────────────────────────────────────
+
+name: studyalign-examples
+
+services:
+  proxy:
+    build:
+      context: ./deploy/proxy
+    image: studyalign-examples-proxy
+    restart: unless-stopped
+    ports:
+      - "${PROXY_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      - react-app
+      - vanilla-app
+    networks: [default]
+
+  react-app:
+    build:
+      context: ./apps/react-app
+      target: prod
+      args:
+        VITE_STUDY_ALIGN_URL: ${VITE_STUDY_ALIGN_URL:-https://hciaitools.uni-bayreuth.de/study-align-dev}
+    image: studyalign-examples-react
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/react/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks: [default]
+
+  vanilla-app:
+    build:
+      context: ./apps/vanilla-app
+      target: prod
+      args:
+        VITE_STUDY_ALIGN_URL: ${VITE_STUDY_ALIGN_URL:-https://hciaitools.uni-bayreuth.de/study-align-dev}
+    image: studyalign-examples-vanilla
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/vanilla/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks: [default]
+
+networks:
+  default:

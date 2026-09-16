@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyAlign: Example Apps</title>
+<style>
+  /* StudyAlign design tokens (from styleguide.html). */
+  :root {
+    --sa-primary:        #2563eb;
+    --sa-primary-dark:   #1f5eb3;
+    --sa-gold:           #f2c200;
+    --sa-taupe:          #5b5346;
+    --sa-ink:            #23211a;
+    --sa-mediumgrey:     #8b8570;
+    --sa-superlightgrey: #eae7dd;
+    --sa-bg:             #f5f4f2;
+    --sa-surface:        #ffffff;
+    --sa-border:         rgba(23, 33, 55, 0.08);
+    --sa-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --sa-radius:      0.5rem;
+    --sa-shadow-sm:   0 1px 2px rgba(23, 33, 55, 0.06);
+    --sa-shadow:      0 4px 16px rgba(23, 33, 55, 0.10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--sa-font);
+    color: var(--sa-ink);
+    background: var(--sa-bg);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  h1 { font-size: 2.25rem; letter-spacing: -0.02em; margin: 0 0 0.35rem; }
+  .lead { color: var(--sa-mediumgrey); margin: 0 0 2.25rem; font-size: 1.05rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .card {
+    display: block;
+    background: var(--sa-surface);
+    border: 1px solid var(--sa-border);
+    border-radius: var(--sa-radius);
+    box-shadow: var(--sa-shadow-sm);
+    padding: 1.25rem 1.35rem;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .card:hover { box-shadow: var(--sa-shadow); transform: translateY(-2px); }
+  .card h2 { font-size: 1.2rem; margin: 0 0 0.4rem; letter-spacing: -0.01em; }
+  .card p { margin: 0; color: var(--sa-mediumgrey); font-size: 0.92rem; }
+  .tag {
+    display: inline-block; margin-bottom: 0.6rem;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
+    text-transform: uppercase; color: #fff; background: var(--sa-primary);
+    padding: 0.15rem 0.55rem; border-radius: 999px;
+  }
+  .tag.vanilla { background: var(--sa-taupe); }
+  footer { margin-top: 2.5rem; color: var(--sa-mediumgrey); font-size: 0.85rem; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; background: var(--sa-superlightgrey); padding: 0.05rem 0.3rem; border-radius: 4px; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>StudyAlign: Example Apps</h1>
+  <p class="lead">
+    Two minimal demo prototypes, each a Quill rich-text editor instrumented with
+    the <a href="https://www.npmjs.com/package/study-align-lib">study-align-lib</a>
+    logging library. They record mouse and keyboard interactions to a StudyAlign
+    backend, the same integration you would add to a real study prototype.
+  </p>
+
+  <div class="cards">
+    <a class="card" href="/react/">
+      <span class="tag">React</span>
+      <h2>React example →</h2>
+      <p>Quill editor wrapped in a React component, logging through a
+         <code>useLogger</code> hook built on study-align-lib.</p>
+    </a>
+    <a class="card" href="/vanilla/">
+      <span class="tag vanilla">Vanilla JS</span>
+      <h2>Vanilla JS example →</h2>
+      <p>The same Quill editor and logging with no framework, plain ES modules
+         bundled by Vite.</p>
+    </a>
+  </div>
+
+  <footer>
+    Both apps sit behind a single nginx reverse proxy. See the repository README
+    for local development and deployment.
+  </footer>
+</div>
+</body>
+</html>

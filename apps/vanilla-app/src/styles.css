@@ -1,0 +1,96 @@
+/* StudyAlign design tokens (from styleguide.html). */
+:root {
+  --sa-primary: #2563eb;
+  --sa-primary-dark: #1f5eb3;
+  --sa-gold: #f2c200;
+  --sa-taupe: #5b5346;
+  --sa-success: #24a866;
+  --sa-warning: #e2a72c;
+  --sa-danger: #e14545;
+  --sa-ink: #23211a;
+  --sa-mediumgrey: #8b8570;
+  --sa-lightgrey: #c8c5ba;
+  --sa-superlightgrey: #eae7dd;
+  --sa-bg: #f5f4f2;
+  --sa-surface: #ffffff;
+  --sa-border: rgba(23, 33, 55, 0.08);
+  --sa-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --sa-radius: 0.5rem;
+  --sa-shadow-sm: 0 1px 2px rgba(23, 33, 55, 0.06);
+  --sa-shadow: 0 4px 16px rgba(23, 33, 55, 0.1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--sa-font);
+  color: var(--sa-ink);
+  background: var(--sa-bg);
+  line-height: 1.55;
+}
+
+.page { max-width: 820px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+
+.brand-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--sa-primary);
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  margin-bottom: 0.9rem;
+}
+
+.intro h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 0 0 0.6rem; }
+.intro p { margin: 0 0 0.9rem; }
+.intro code {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  background: var(--sa-superlightgrey);
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.status {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--sa-radius);
+  border: 1px solid var(--sa-border);
+}
+.status.ok { color: #10633d; background: rgba(36, 168, 102, 0.12); }
+.status.warn { color: #8a5a12; background: rgba(226, 167, 44, 0.14); }
+
+.editor-shell {
+  margin-top: 1.75rem;
+  background: var(--sa-surface);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+  box-shadow: var(--sa-shadow-sm);
+  overflow: hidden;
+}
+.editor-shell .ql-toolbar { border: none; border-bottom: 1px solid var(--sa-border); }
+.editor-shell .ql-container { border: none; min-height: 260px; font-size: 1rem; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+
+.btn {
+  font-family: var(--sa-font);
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: var(--sa-radius);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  box-shadow: var(--sa-shadow-sm);
+}
+.btn-primary { background: var(--sa-primary); color: #fff; }
+.btn-primary:hover { background: var(--sa-primary-dark); }
+.btn-outline { background: transparent; color: var(--sa-primary); border-color: var(--sa-primary); box-shadow: none; }
+.btn-outline:hover { background: rgba(37, 99, 235, 0.06); }
+
+.hint { margin-top: 0.9rem; color: var(--sa-mediumgrey); font-size: 0.85rem; }

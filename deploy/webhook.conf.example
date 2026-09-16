@@ -1,0 +1,29 @@
+[
+  {
+    "id": "studyalign-examples",
+    "execute-command": "/opt/studyalign-examples/deploy-examples.sh",
+    "command-working-directory": "/opt/studyalign-examples",
+    "response-message": "deploy started",
+
+    "include-command-output-in-response": false,
+
+    "trigger-rule": {
+      "and": [
+        {
+          "match": {
+            "type": "payload-hmac-sha256",
+            "secret": "CHANGE-ME-openssl-rand-hex-32",
+            "parameter": { "source": "header", "name": "X-Hub-Signature-256" }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "refs/heads/main",
+            "parameter": { "source": "payload", "name": "ref" }
+          }
+        }
+      ]
+    }
+  }
+]
