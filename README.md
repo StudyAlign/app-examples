@@ -49,17 +49,19 @@ them by hand, e.g.:
 http://localhost:8080/react/?study_id=2&condition_id=1&logger_key=YOUR_KEY&participant_token=…
 ```
 
-The backend URL is set with `VITE_STUDY_ALIGN_URL` in `.env` (baked into the
-build). It defaults to the public StudyAlign dev backend.
+The backend URL is set with `VITE_STUDY_ALIGN_URL` in `.env`. In development the
+Vite dev servers read it at startup (so a restart picks up a change); in
+production it is baked into the static build. It defaults to the StudyAlign
+backend configured in the compose files.
 
 ## Production
 
 The base file is prod-shaped: each app is a static build served by its own
 small nginx; the `proxy` container is the single public entry point.
 `docker-compose.prod.yml` drops the published port and joins Caddy's shared
-external `web` network.
-
-Follow `DEPLOYMENT_STRATEGY.template.md`. In short, on the server:
+external `web` network, where the proxy is reachable under the alias
+`study_align_app_examples_proxy` (so it never collides with another stack's
+generic `proxy` name). On the server:
 
 ```bash
 # one-time
@@ -75,8 +77,9 @@ cp .env.example .env
 # add deploy/webhook.conf.example to /etc/webhook.conf, restart webhook
 ```
 
-Afterwards a push to `main` deploys itself via the webhook. Files provided for
-deployment:
+The host Caddy site block targets `study_align_app_examples_proxy:80` (see
+`deploy/Caddyfile.example`). Afterwards a push to `main` deploys itself via the
+webhook. Files provided for deployment:
 
 - `docker-compose.prod.yml`: prod overlay (no host port, joins `web`)
 - `deploy-examples.sh`: idempotent pull/rebuild/verify script with a rollback hint
@@ -98,6 +101,6 @@ apps/react-app/               React + Quill demo
 apps/vanilla-app/             Vanilla JS + Quill demo
 ```
 
-The `study-align/` submodule is the StudyAlign platform itself, included for
-reference only. **Do not modify it.** The example apps depend on the published
-`study-align-lib` package from npm, not on the submodule.
+The example apps depend on the published
+[`study-align-lib`](https://www.npmjs.com/package/study-align-lib) package from
+npm; no StudyAlign platform checkout is needed to build or run them.
