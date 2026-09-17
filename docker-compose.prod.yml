@@ -10,15 +10,19 @@
 #      COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml
 #
 #  Then Caddy (see deploy/Caddyfile.example) reaches this stack as:
-#      reverse_proxy proxy:80
+#      reverse_proxy study_align_app_examples_proxy:80
 # ─────────────────────────────────────────────────────────────────────────
 
 services:
   proxy:
     ports: !reset []        # clear the host port the base file published
     networks:
-      - default             # keep reaching the app containers
-      - web                 # let the host Caddy reach it as http://proxy
+      default: {}           # keep reaching the app containers
+      web:                  # let the host Caddy reach it over the shared network
+        # Stable, stack-specific name Caddy targets. Avoids colliding with the
+        # generic "proxy" service name of other stacks sharing the "web" network.
+        aliases:
+          - study_align_app_examples_proxy
 
 networks:
   web:
