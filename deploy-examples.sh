@@ -5,7 +5,7 @@
 # downtime on restart.
 set -Eeuo pipefail
 
-REPO=/opt/studyalign-examples
+REPO=/opt/studyalign/app-examples
 BRANCH=main
 HEALTH_TIMEOUT=180
 LOCK_FILE=/tmp/deploy-studyalign-examples.lock
