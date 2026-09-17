@@ -17,6 +17,9 @@ services:
     command: npm run dev
     environment:
       VITE_HMR_CLIENT_PORT: ${PROXY_PORT:-8080}
+      # Vite exposes VITE_-prefixed process env vars on import.meta.env, so the
+      # dev server honours the same .env value the prod build bakes in as an arg.
+      VITE_STUDY_ALIGN_URL: ${VITE_STUDY_ALIGN_URL:-https://backend.studyalign.com}
     volumes:
       - ./apps/react-app:/app
       - /app/node_modules
@@ -27,6 +30,9 @@ services:
     command: npm run dev
     environment:
       VITE_HMR_CLIENT_PORT: ${PROXY_PORT:-8080}
+      # Vite exposes VITE_-prefixed process env vars on import.meta.env, so the
+      # dev server honours the same .env value the prod build bakes in as an arg.
+      VITE_STUDY_ALIGN_URL: ${VITE_STUDY_ALIGN_URL:-https://backend.studyalign.com}
     volumes:
       - ./apps/vanilla-app:/app
       - /app/node_modules
