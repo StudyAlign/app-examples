@@ -94,3 +94,83 @@ body {
 .btn-outline:hover { background: rgba(37, 99, 235, 0.06); }
 
 .hint { margin-top: 0.9rem; color: var(--sa-mediumgrey); font-size: 0.85rem; }
+
+/* Buffered-events accordion (collapsed by default via native <details>). */
+.buffer {
+  margin-top: 1.25rem;
+  background: var(--sa-surface);
+  border: 1px solid var(--sa-border);
+  border-radius: var(--sa-radius);
+  box-shadow: var(--sa-shadow-sm);
+}
+.buffer > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--sa-ink);
+}
+.buffer > summary::-webkit-details-marker { display: none; }
+.buffer > summary::before {
+  content: "›";
+  display: inline-block;
+  transition: transform 0.15s ease;
+  color: var(--sa-mediumgrey);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.buffer[open] > summary::before { transform: rotate(90deg); }
+.buffer-count {
+  margin-left: auto;
+  min-width: 1.4rem;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--sa-primary);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+}
+.buffer-empty {
+  margin: 0;
+  padding: 0 1rem 1rem;
+  color: var(--sa-mediumgrey);
+  font-size: 0.85rem;
+}
+.buffer-list {
+  margin: 0;
+  padding: 0 0.5rem 0.5rem;
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.buffer-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.5rem;
+  border-top: 1px solid var(--sa-superlightgrey);
+  font-size: 0.85rem;
+}
+.buffer-kind {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: var(--sa-taupe);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+}
+.buffer-kind.key { background: var(--sa-primary); }
+.buffer-list code {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  background: var(--sa-superlightgrey);
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+.buffer-list time { margin-left: auto; color: var(--sa-mediumgrey); font-size: 0.78rem; }

@@ -68,3 +68,37 @@ flushBtn.addEventListener("click", async () => {
 });
 
 document.getElementById("proceed").addEventListener("click", () => logger.proceed());
+
+// ── Buffered-events view ───────────────────────────────────────────
+// Re-render the collapsed accordion whenever the local buffer changes.
+const bufferCountEl = document.getElementById("buffer-count");
+const bufferBodyEl = document.getElementById("buffer-body");
+
+logger.onBufferChange((buffer) => {
+  bufferCountEl.textContent = String(buffer.length);
+  if (buffer.length === 0) {
+    bufferBodyEl.innerHTML =
+      '<p class="buffer-empty">Nothing buffered yet. Type in the editor: ' +
+      "keydown events queue here until you flush them.</p>";
+    return;
+  }
+  const rows = buffer
+    .map((entry) => {
+      const time = new Date(entry.ts).toLocaleTimeString();
+      const detail = entry.detail
+        ? `<code>${escapeHtml(entry.detail)}</code>`
+        : "";
+      return (
+        `<li><span class="buffer-kind ${entry.kind}">${entry.type}</span>` +
+        `${detail}<time>${time}</time></li>`
+      );
+    })
+    .join("");
+  bufferBodyEl.innerHTML = `<ul class="buffer-list">${rows}</ul>`;
+});
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+  );
+}

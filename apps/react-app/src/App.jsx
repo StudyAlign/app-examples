@@ -8,7 +8,7 @@ const STUDY_ALIGN_URL =
   import.meta.env.VITE_STUDY_ALIGN_URL || "https://hciaitools.uni-bayreuth.de/study-align-dev";
 
 export default function App() {
-  const { isReady, log, transmit, proceed } = useLogger(STUDY_ALIGN_URL);
+  const { isReady, log, transmit, proceed, buffer } = useLogger(STUDY_ALIGN_URL);
   const [flushed, setFlushed] = useState(false);
 
   useEffect(() => {
@@ -61,6 +61,29 @@ export default function App() {
           Buffered keydown events are held locally and sent in bulk when you flush;
           open the console to watch every logged interaction live.
         </p>
+
+        <details className="buffer">
+          <summary>
+            Buffered events
+            <span className="buffer-count">{buffer.length}</span>
+          </summary>
+          {buffer.length === 0 ? (
+            <p className="buffer-empty">
+              Nothing buffered yet. Type in the editor: keydown events queue here
+              until you flush them.
+            </p>
+          ) : (
+            <ul className="buffer-list">
+              {buffer.map((entry) => (
+                <li key={entry.id}>
+                  <span className={"buffer-kind " + entry.kind}>{entry.type}</span>
+                  {entry.detail && <code>{entry.detail}</code>}
+                  <time>{new Date(entry.ts).toLocaleTimeString()}</time>
+                </li>
+              ))}
+            </ul>
+          )}
+        </details>
       </main>
     </div>
   );

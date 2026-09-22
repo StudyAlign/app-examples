@@ -24,6 +24,33 @@ export const TransmitterEvents = Object.freeze({
 const isBulk = (name) => name.startsWith("bulk_");
 const bulkToEvent = (name) => name.slice("bulk_".length);
 
+// Compact, display-only summary of a buffered interaction, for the demo's
+// "buffered events" view. Not sent to the backend.
+let bufferSeq = 0;
+function describeBuffered(type, data) {
+  const kind = type.startsWith("key") ? "key" : "mouse";
+  let detail = "";
+  if (kind === "key") {
+    detail = data && data.key ? data.key : "";
+  } else if (data && typeof data.clientX === "number") {
+    detail = `${data.clientX}, ${data.clientY}`;
+  }
+  return { id: ++bufferSeq, kind, type, detail, ts: Date.now() };
+}
+
+// Removes up to n buffered entries of the given kind (mirrors what a bulk
+// transmitter sends), leaving the rest queued.
+function removeUpTo(list, kind, n) {
+  let removed = 0;
+  return list.filter((entry) => {
+    if (entry.kind === kind && removed < n) {
+      removed += 1;
+      return false;
+    }
+    return true;
+  });
+}
+
 // Wraps study-align-lib: reads the StudyAlign URL parameters, initialises the
 // library, and exposes log / transmit / proceed helpers. Mirrors the React
 // app's useLogger hook, without React.
@@ -37,6 +64,16 @@ export function createLogger(apiUrl) {
   const conditionId = params.conditionId;
   const participantToken = params.participantToken;
   const isReady = Boolean(params.loggerKey && conditionId);
+
+  // Locally buffered bulk events + simple subscription so the UI can re-render.
+  let buffer = [];
+  const listeners = new Set();
+  const notify = () => listeners.forEach((cb) => cb(buffer));
+  const onBufferChange = (cb) => {
+    listeners.add(cb);
+    cb(buffer);
+    return () => listeners.delete(cb);
+  };
 
   if (!isReady) {
     console.warn(
@@ -78,15 +115,31 @@ export function createLogger(apiUrl) {
 
   function log(eventName, data, metaData = {}) {
     console.log("[StudyAlign] log", eventName, { data, metaData });
-    if (!isReady) return;
     if (isBulk(eventName)) {
-      addToBulk(eventName, data, metaData);
-    } else {
-      logNow(eventName, data, metaData);
+      // Record every bulk event in the local view (visible even without a
+      // backend); forward to the library for transmission only when ready.
+      buffer = [...buffer, describeBuffered(bulkToEvent(eventName), data)];
+      notify();
+      if (isReady) addToBulk(eventName, data, metaData);
+      return;
     }
+    if (isReady) logNow(eventName, data, metaData);
   }
 
   async function transmit(eventName, bulkSize = 25) {
+    // Clear the buffered view for the flushed kind (up to bulkSize), matching
+    // what the library sends. Runs even in console-only mode so the flush button
+    // stays interactive.
+    const kind =
+      eventName === TransmitterEvents.TRANSMIT_KEY_BULK
+        ? "key"
+        : eventName === TransmitterEvents.TRANSMIT_MOUSE_BULK
+          ? "mouse"
+          : null;
+    if (kind) {
+      buffer = removeUpTo(buffer, kind, bulkSize);
+      notify();
+    }
     if (!isReady) return;
     try {
       switch (eventName) {
@@ -113,5 +166,5 @@ export function createLogger(apiUrl) {
     }
   }
 
-  return { isReady, sal, log, transmit, proceed };
+  return { isReady, sal, log, transmit, proceed, onBufferChange };
 }
